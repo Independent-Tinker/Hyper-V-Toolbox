@@ -1,0 +1,52 @@
+# Script to pass through a USB device to Hyper-V VM
+# Make sure to run as Administrator
+
+# Parameters
+$vmName = "YourVMName" # Replace with your VM name
+$usbDeviceDescription = "*TP-Link*" # Modify to match your USB device
+
+# Check for admin privileges
+if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Warning "Please run as Administrator"
+    Exit
+}
+
+# Stop the VM if it's running
+$vm = Get-VM -Name $vmName -ErrorAction SilentlyContinue
+if ($vm.State -eq "Running") {
+    Write-Host "Stopping VM '$vmName' to attach device..."
+    Stop-VM -Name $vmName -Force
+}
+
+# Get USB device
+$usbDevice = Get-PnpDevice -FriendlyName $usbDeviceDescription -ErrorAction SilentlyContinue
+
+if (-not $usbDevice) {
+    Write-Error "USB device matching '$usbDeviceDescription' not found. Try these devices:"
+    Get-PnpDevice -Class "USB" | Select-Object FriendlyName, InstanceId | Format-Table -AutoSize
+    Exit
+}
+
+# Get device instance ID
+$instanceId = $usbDevice.InstanceId
+
+Write-Host "Found USB device: $($usbDevice.FriendlyName), ID: $instanceId"
+
+try {
+    # Dismount from host
+    $hardwareId = (Get-PnpDeviceProperty -InstanceId $instanceId -KeyName DEVPKEY_Device_HardwareIds).Data[0]
+    Disable-PnpDevice -InstanceId $instanceId -Confirm:$false
+
+    # Add device to VM
+    Add-VMAssignableDevice -LocationPath $instanceId -VMName $vmName
+    
+    # Start the VM
+    Start-VM -Name $vmName
+    
+    Write-Host "USB device has been passed through to VM '$vmName'"
+    Write-Host "Note: You may need to install device drivers inside the VM"
+} catch {
+    Write-Error "Error attaching device: $_"
+    # Re-enable device on host if there was an error
+    Enable-PnpDevice -InstanceId $instanceId -Confirm:$false
+}
