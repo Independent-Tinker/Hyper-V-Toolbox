@@ -39,7 +39,7 @@ sed -i_orig -e 's/security_layer=negotiate/security_layer=rdp/g' /etc/xrdp/xrdp.
 sed -i_orig -e 's/crypt_level=high/crypt_level=none/g' /etc/xrdp/xrdp.ini
 # disable bitmap compression since its local its much faster
 sed -i_orig -e 's/bitmap_compression=true/bitmap_compression=false/g' /etc/xrdp/xrdp.ini
-sed -n -e 's/max_bpp=32/max_bpp=24/g' /etc/xrdp/xrdp.ini
+sed -i_orig -e 's/max_bpp=32/max_bpp=24/g' /etc/xrdp/xrdp.ini
 sed -i_orig -e 's/X11DisplayOffset=10/X11DisplayOffset=0/g' /etc/xrdp/sesman.ini
 # rename the redirected drives to 'shared-drives'
 sed -i_orig -e 's/FuseMountName=thinclient_drives/FuseMountName=shared-drives/g' /etc/xrdp/sesman.ini
