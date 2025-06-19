@@ -1,3 +1,15 @@
+Write-Host @"
+┏┓━┏┓━━━━━━━━━━━━━━━━━━━━━┏┓━━┏┓━━━━━┏━━━━┓━━━━━━━━┏┓━┏┓━━━━━━━━━━
+┃┃━┃┃━━━━━━━━━━━━━━━━━━━━━┃┗┓┏┛┃━━━━━┃┏┓┏┓┃━━━━━━━━┃┃━┃┃━━━━━━━━━━
+┃┗━┛┃┏┓━┏┓┏━━┓┏━━┓┏━┓━━━━━┗┓┃┃┏┛━━━━━┗┛┃┃┗┛┏━━┓┏━━┓┃┃━┃┗━┓┏━━┓┏┓┏┓
+┃┏━┓┃┃┃━┃┃┃┏┓┃┃┏┓┃┃┏┛┏━━━┓━┃┗┛┃━┏━━━┓━━┃┃━━┃┏┓┃┃┏┓┃┃┃━┃┏┓┃┃┏┓┃┗╋╋┛
+┃┃━┃┃┃┗━┛┃┃┗┛┃┃┃━┫┃┃━┗━━━┛━┗┓┏┛━┗━━━┛━┏┛┗┓━┃┗┛┃┃┗┛┃┃┗┓┃┗┛┃┃┗┛┃┏╋╋┓
+┗┛━┗┛┗━┓┏┛┃┏━┛┗━━┛┗┛━━━━━━━━┗┛━━━━━━━━┗━━┛━┗━━┛┗━━┛┗━┛┗━━┛┗━━┛┗┛┗┛
+━━━━━┏━┛┃━┃┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━┗━━┛━┗┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"@ -ForegroundColor Cyan
+
+
 # Check for host-tools and client-tools directories
 $hostToolsPath = Join-Path -Path (Get-Location) -ChildPath "host-tools"
 $clientToolsPath = Join-Path -Path (Get-Location) -ChildPath "client-tools"
@@ -18,7 +30,6 @@ if ($hostPs1Files.Count -eq 0 -and $clientPs1Files.Count -eq 0) {
 }
 
 do {
-    Clear-Host
     $toolChoice = $null
 
     if ($hostPs1Files.Count -gt 0 -and $clientPs1Files.Count -gt 0) {
@@ -53,7 +64,6 @@ do {
     }
 
     # List scripts in the selected toolbox
-    Clear-Host
     Write-Host "`nAvailable PowerShell Scripts in ${toolName}:" -ForegroundColor Cyan
     Write-Host ("=" * 69)
     Write-Host "Index".PadRight(8) + "Script Name".PadRight(45) + "Size (KB)"
@@ -78,7 +88,6 @@ do {
         break
     } elseif ($selection -match '^\d+$' -and [int]$selection -ge 1 -and [int]$selection -le $ps1Files.Count) {
         $selectedFile = $ps1Files[[int]$selection - 1]
-        Clear-Host
         Write-Host "Running script: $($selectedFile.Name)" -ForegroundColor Cyan
         Write-Host ("=" * 60)
         & "$($selectedFile.FullName)"
