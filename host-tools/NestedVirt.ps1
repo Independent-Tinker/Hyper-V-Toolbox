@@ -8,21 +8,28 @@ function Show-VMs {
         exit
     }
     Write-Host "`nVMs and their ExposeVirtualizationExtensions setting:" -ForegroundColor Cyan
-    Write-Host ("=" * 60)
-    Write-Host "Index".PadRight(8) + "Name".PadRight(45) + "ExposeVirtExt"
-    Write-Host ("-" * 8) + ("-" * 45) + ("-" * 15)
+    Write-Host ("=" * 100)
+    Write-Host "Index".PadRight(8) + "Name".PadRight(45) + "ExposeVirtExt".PadRight(15) + "Running"
+    Write-Host ("-" * 8) + ("-" * 45) + ("-" * 15) + ("-" * 12)
 
     $global:exposeList = @()
     $index = 1
     foreach ($vm in $vms) {
+        $vmObj = Get-VM -Name $vm.Name
         $expose = (Get-VMProcessor -VMName $vm.Name).ExposeVirtualizationExtensions
         $global:exposeList += $expose
+        $isRunning = $vmObj.State -eq 'Running'
         Write-Host "$index".PadRight(12) -NoNewline
         Write-Host "$($vm.Name)".PadRight(47) -NoNewline
         if ($expose) {
-            Write-Host "True" -ForegroundColor Green
+            Write-Host "True".PadRight(18) -ForegroundColor Green -NoNewline
         } else {
-            Write-Host "False" -ForegroundColor Red
+            Write-Host "False".PadRight(18) -ForegroundColor Red -NoNewline
+        }
+        if ($isRunning) {
+            Write-Host "Yes" -ForegroundColor Green
+        } else {
+            Write-Host "No" -ForegroundColor Red
         }
         $index++
     }
@@ -31,6 +38,7 @@ function Show-VMs {
 
 do {
     Show-VMs
+    Write-Host "`nNote that changing ExposeVirtualizationExtensions requires the VM to be powered off." -ForegroundColor Green
     Write-Host "`nEnter the number of the VM to toggle ExposeVirtualizationExtensions (or 0 to exit): " -NoNewline -ForegroundColor Cyan
     $selection = Read-Host
 
