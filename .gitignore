@@ -1,0 +1,61 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Visual Studio Code
+.vscode/
+.history/
+*.code-workspace
+
+# PowerShell
+*.ps1.log
+*.psm1.log
+*.psd1.log
+*.txt.log
+*.xml.log
+*.json.log
+PSScriptAnalyzerSettings.psd1
+
+# Hyper-V specific files
+*.vmcx
+*.vmrs
+*.vhdx
+*.vhd
+*.avhdx
+*.avhd
+
+# Environment files
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Cache files
+cache/
+*.cache
+
+# User-specific files
+*.user
+*.suo
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]uild/
+msbuild.log
+msbuild.err
+msbuild.wrn
