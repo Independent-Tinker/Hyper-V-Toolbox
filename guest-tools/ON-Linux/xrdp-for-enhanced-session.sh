@@ -59,20 +59,20 @@ sed -i 's/bitmap_compression=true/bitmap_compression=false/g' /etc/xrdp/xrdp.ini
 
 # Create custom session script for GNOME
 log "Creating custom session script for GNOME..."
-if [ ! -e /etc/xrdp/startdebian.sh ]; then
-    cat > /etc/xrdp/startdebian.sh << 'EOF' || handle_error "Failed to create startdebian.sh"
+if [ ! -e /etc/xrdp/custom.sh ]; then
+    cat > /etc/xrdp/custom.sh << 'EOF' || handle_error "Failed to create custom.sh"
 #!/bin/sh
 export GNOME_SHELL_SESSION_MODE=debian
 export XDG_CURRENT_DESKTOP=debian:GNOME
 exec /etc/xrdp/startwm.sh
 EOF
-    sed -i '/^DefaultWindowManager=/s/startwm/startdebian/' /etc/xrdp/sesman.ini || handle_error "Failed to update DefaultWindowManager setting"
-    chmod a+x /etc/xrdp/startdebian.sh || handle_error "Failed to make startdebian.sh executable"
+    sed -i '/^DefaultWindowManager=/s/startwm/custom/' /etc/xrdp/sesman.ini || handle_error "Failed to update DefaultWindowManager setting"
+    chmod a+x /etc/xrdp/custom.sh || handle_error "Failed to make custom.sh executable"
 fi
 
 # Configure sesman.ini to use the custom session script and rename redirected drives
 log "Configuring XRDP session manager..."
-sed -i 's/startwm/startdebian/g' /etc/xrdp/sesman.ini || handle_error "Failed to update session script in sesman.ini"
+sed -i 's/startwm/custom/g' /etc/xrdp/sesman.ini || handle_error "Failed to update session script in sesman.ini"
 sed -i 's/FuseMountName=thinclient_drives/FuseMountName=shared-drives/g' /etc/xrdp/sesman.ini || handle_error "Failed to update FuseMountName in sesman.ini"
 
 # Allow anybody to start X sessions (needed for XRDP)
