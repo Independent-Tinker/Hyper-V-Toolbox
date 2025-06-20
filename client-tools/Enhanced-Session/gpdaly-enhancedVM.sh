@@ -90,13 +90,22 @@ if [ ! -e /etc/modules-load.d/hv_sock.conf ]; then
 fi
 
 log "Configuring PolicyKit for color management..."
-cat > /etc/polkit-1/localauthority/50-local.d/45-allow-colord.pkla << 'EOF' || handle_error "Failed to create PolicyKit configuration for colord"
-[Allow Colord all Users]
-Identity=unix-user:*
-Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
-ResultAny=no
-ResultInactive=no
-ResultActive=yes
+cat << 'EOF' | sudo tee /etc/polkit-1/rules.d/45-allow-colord.rules > /dev/null
+polkit.addRule(function(action, subject) {
+    if (
+        subject.isInGroup("users") &&
+        (
+            action.id == "org.freedesktop.color-manager.create-device" ||
+            action.id == "org.freedesktop.color-manager.create-profile" ||
+            action.id == "org.freedesktop.color-manager.delete-device" ||
+            action.id == "org.freedesktop.color-manager.delete-profile" ||
+            action.id == "org.freedesktop.color-manager.modify-device" ||
+            action.id == "org.freedesktop.color-manager.modify-profile"
+        )
+    ) {
+        return polkit.Result.YES;
+    }
+});
 EOF
 
 # Reload systemd and start XRDP
