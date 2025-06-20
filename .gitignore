@@ -1,3 +1,6 @@
+# Development Folders
+Excluded/
+
 # Operating System Files
 .DS_Store
 Thumbs.db
