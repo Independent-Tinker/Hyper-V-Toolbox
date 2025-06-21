@@ -1,14 +1,11 @@
 #!/bin/bash
-
 # Set error handling
 set -e
-trap 'echo "An error occurred. Exiting..."; exit 1' ERR
-
 # Function for error handling
 handle_error() {
   echo "Error: $1"
   exit 1
-}
+} 
 
 # Check for --clean flag to remove old Docker packages
 if [[ "$1" == "--clean" ]]; then

@@ -22,7 +22,7 @@ if [[ ! -d "$guest_tools_dir" ]]; then
 fi
 
 # Find all .sh scripts in guest-tools
-mapfile -t sh_files < <(find "$guest_tools_dir" -maxdepth 1 -type f -name "*.sh" | sort)
+mapfile -t sh_files < <(find "$guest_tools_dir/ON-Linux" -maxdepth 1 -type f -name "*.sh" | sort)
 
 if [[ ${#sh_files[@]} -eq 0 ]]; then
     echo "No .sh files found in guest-tools directory."
