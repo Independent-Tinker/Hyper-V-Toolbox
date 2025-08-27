@@ -75,12 +75,17 @@ fi
 apt_update_safe() {
     log "Updating system package lists..."
     set +e
-    apt-get update 2> >(tee /tmp/apt_update.err >&2)
+    # Capture stderr separately (portable; avoids bash-only process substitution)
+    apt-get update 2> /tmp/apt_update.err
     local rc=$?
+    # Echo captured stderr so user still sees warnings/errors
+    if [ -s /tmp/apt_update.err ]; then
+        cat /tmp/apt_update.err >&2
+    fi
     if [ $rc -ne 0 ]; then
         if grep -qi 'Release file' /tmp/apt_update.err || grep -qi 'release info' /tmp/apt_update.err; then
             warn "Apt update failed due to Release file / suite change. Retrying with --allow-releaseinfo-change options."
-            apt-get update --allow-releaseinfo-change --allow-releaseinfo-change-suite || handle_error "Apt update still failed after allowing release info change"
+            apt-get update --allow-releaseinfo-change --allow-releaseinfo-change-suite 2>> /tmp/apt_update.err || handle_error "Apt update still failed after allowing release info change"
         else
             handle_error "Failed to update package information (rc=$rc)"
         fi
